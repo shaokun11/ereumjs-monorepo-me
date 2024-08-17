@@ -33,6 +33,9 @@
     "src"
   ],
   "scripts": {
+    "me2": "tsx test/tester --state --test='div' --fork='Cancun' --profile --jsontrace",
+    "me": "tsx  test/tester --state --customStateTest='../ethereum-tests/GeneralStateTests/Pyspecs/byzantium/eip198_modexp_precompile/modexp.json' --fork='Cancun' --jsontrace --profile --testIndex 32",
+    "me0": "npm run me>0.log 2>&1",
     "benchmarks": "node --max-old-space-size=4096 ./benchmarks/run.js benchmarks mainnetBlocks:10",
     "build": "../../config/cli/ts-build.sh",
     "build:benchmarks": "npm run build && tsc -p tsconfig.benchmarks.json",
@@ -88,7 +91,7 @@
     "node-dir": "^0.1.17",
     "nyc": "^15.1.0",
     "solc": "^0.8.1",
-    "tape": "^5.3.1"
+    "tape": "^5.8.1"
   },
   "engines": {
     "node": ">=18"

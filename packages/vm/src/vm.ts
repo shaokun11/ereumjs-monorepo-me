@@ -412,6 +412,9 @@ export class VM {
       str += '|'
       // eslint-disable-next-line
       console.log(str)
+      if (profileTitle.includes('Precompile')) {
+        console.log(JSON.stringify(entry))
+      }
     }
 
     // Finally, write the footer

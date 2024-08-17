@@ -239,7 +239,6 @@ export class Interpreter {
       timer = this.performanceLogger.pauseTimer()
       overheadTimer = this.performanceLogger.startTimer('Overhead')
     }
-
     // Iterate through the given ops until something breaks or we hit STOP
     while (this._runState.programCounter < this._runState.code.length) {
       const programCounter = this._runState.programCounter

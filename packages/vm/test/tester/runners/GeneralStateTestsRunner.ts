@@ -3,6 +3,7 @@ import { Blockchain } from '@ethereumjs/blockchain'
 import { DefaultStateManager } from '@ethereumjs/statemanager'
 import { Trie } from '@ethereumjs/trie'
 import { Account, Address, bytesToHex, equalsBytes, toBytes } from '@ethereumjs/util'
+import utils from 'node:util'
 
 import { VM } from '../../../src/vm'
 import { makeBlockFromEnv, makeTx, setupPreConditions } from '../../util'
@@ -65,6 +66,12 @@ function parseTestCases(
 }
 
 async function runTestCase(options: any, testData: any, t: tape.Test) {
+  delete testData.transaction.accessLists
+  console.log(
+    utils.inspect(testData, {
+      depth: 10,
+    })
+  )
   const begin = Date.now()
   // Copy the common object to not create long-lasting
   // references in memory which might prevent GC
@@ -139,7 +146,14 @@ async function runTestCase(options: any, testData: any, t: tape.Test) {
         vm.events.on('afterTx', afterTxHandler)
       }
       try {
-        await vm.runTx({ tx, block })
+        const res = await vm.runTx({ tx, block })
+        console.log('result:', {
+          totalGasSpent: res.totalGasSpent,
+          gasRefund: res.gasRefund,
+          amountSpent: res.amountSpent,
+          gas: res.execResult.gas,
+          executionGasUsed: res.execResult.executionGasUsed,
+        })
         execInfo = 'successful tx run'
       } catch (e: any) {
         console.log(e)
@@ -156,7 +170,11 @@ async function runTestCase(options: any, testData: any, t: tape.Test) {
   const stateManagerStateRoot = await vm.stateManager.getStateRoot() // Ensure state root is updated (flush all changes to trie)
   const testDataPostStateRoot = toBytes(testData.postStateRoot)
   const stateRootsAreEqual = equalsBytes(stateManagerStateRoot, testDataPostStateRoot)
-
+  console.log(
+    'expect:%s,actually:%s',
+    testData.postStateRoot,
+    '0x' + Buffer.from(stateManagerStateRoot).toString('hex')
+  )
   const end = Date.now()
   const timeSpent = `${(end - begin) / 1000} secs`
 
@@ -185,7 +203,10 @@ export async function runStateTest(options: any, testData: any, t: tape.Test) {
       t.comment(`No ${options.forkConfigTestSuite} post state defined, skip test`)
       return
     }
-    for (const testCase of testCases) {
+    // for (const testCase of testCases) {
+    for (let i = 0; i < testCases.length; i++) {
+      console.log(`Running test case ${i + 1}/${testCases.length}`)
+      const testCase = testCases[i]
       if (options.reps !== undefined && options.reps > 0) {
         let totalTimeSpent = 0
         for (let x = 0; x < options.reps; x++) {

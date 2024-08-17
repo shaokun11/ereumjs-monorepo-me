@@ -3,7 +3,7 @@ import * as minimist from 'minimist'
 import * as path from 'path'
 import * as process from 'process'
 import { initRustBN } from 'rustbn-wasm'
-import * as tape from 'tape'
+import tape from 'tape'
 
 import {
   DEFAULT_FORK_CONFIG,
@@ -196,12 +196,12 @@ async function runTests() {
   }
   console.log(`+${'-'.repeat(width)}+`)
   console.log()
-
+  const index = argv.testIndex
   if (argv.customStateTest !== undefined) {
     const fileName: string = argv.customStateTest
     //@ts-ignore tsx/esbuild can't figure out this namespace import thing but it works fine :shrug:
     tape(name, (t) => {
-      getTestFromSource(fileName, async (err: string | null, test: any) => {
+      getTestFromSource(fileName, index, async (err: string | null, test: any) => {
         if (err !== null) {
           return t.fail(err)
         }

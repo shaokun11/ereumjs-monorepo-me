@@ -264,6 +264,7 @@ export class EVM implements EVMInterface {
    */
   getActiveOpcodes(): OpcodeList {
     const data = getOpcodesForHF(this.common, this._customOpcodes)
+
     this._opcodes = data.opcodes
     this._dynamicGasHandlers = data.dynamicGasHandlers
     this._handlers = data.handlers

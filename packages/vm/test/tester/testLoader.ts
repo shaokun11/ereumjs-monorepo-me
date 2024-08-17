@@ -72,7 +72,7 @@ function skipTest(testName: string, skipList = []) {
  * @param file path to load a single test from
  * @param onFile callback function invoked with contents of specified file (or an error message)
  */
-export function getTestFromSource(file: string, onFile: Function) {
+export function getTestFromSource(file: string, index = 0, onFile: Function) {
   const stream = fs.createReadStream(file)
   let contents = ''
   let test: any = null
@@ -92,11 +92,9 @@ export function getTestFromSource(file: string, onFile: Function) {
       } catch (e: any) {
         onFile(e)
       }
-
-      const testName = Object.keys(test)[0]
+      const testName = Object.keys(test)[index]
       const testData = test[testName]
       testData.testName = testName
-
       onFile(null, testData)
     })
 }
