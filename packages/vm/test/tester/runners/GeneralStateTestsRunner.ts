@@ -66,9 +66,10 @@ function parseTestCases(
 }
 
 async function runTestCase(options: any, testData: any, t: tape.Test) {
-  delete testData.transaction.accessLists
+  let a = JSON.parse(JSON.stringify(testData))
+  delete a.transaction.accessLists
   console.log(
-    utils.inspect(testData, {
+    utils.inspect(a, {
       depth: 10,
     })
   )
